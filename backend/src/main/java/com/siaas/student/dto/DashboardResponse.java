@@ -19,6 +19,6 @@ public record DashboardResponse(
         String grade,
         double gradePoints,
         double attendancePercent,
-        boolean isWeak
+        boolean weak
     ) {}
 }

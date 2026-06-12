@@ -49,14 +49,14 @@ public class StudentService {
 
         List<DashboardResponse.SubjectStats> subjects = new ArrayList<>();
         double sumScore = 0;
-        String semesterName = "";
+        String semesterName = currentMarks.isEmpty() ? "" : currentMarks.get(0).getSemester().getName();
 
         for (Marks m : currentMarks) {
             UUID subjectId = m.getSubject().getId();
             long present = presentMap.getOrDefault(subjectId, 0L);
             long total   = totalMap.getOrDefault(subjectId, 0L);
             double attPct = total > 0 ? round1((double) present / total * 100) : 0.0;
-            boolean isWeak = attPct < 75 || m.getTotal() < 50;
+            boolean weak = attPct < 75 || m.getTotal() < 50;
 
             subjects.add(new DashboardResponse.SubjectStats(
                 m.getSubject().getCode(),
@@ -66,10 +66,9 @@ public class StudentService {
                 m.getGrade(),
                 m.getGradePoints(),
                 attPct,
-                isWeak
+                weak
             ));
             sumScore += m.getTotal();
-            semesterName = m.getSemester().getName();
         }
 
         double sgpa    = computeWeightedGpa(currentMarks);
@@ -80,7 +79,7 @@ public class StudentService {
         double totalClasses = totalMap.values().stream().mapToLong(Long::longValue).sum();
         double overallAtt   = totalClasses > 0 ? round1(totalPresent / totalClasses * 100) : 0;
 
-        long weakCount = subjects.stream().filter(DashboardResponse.SubjectStats::isWeak).count();
+        long weakCount = subjects.stream().filter(DashboardResponse.SubjectStats::weak).count();
 
         return new DashboardResponse(
             cgpa, sgpa, overallAtt, avgScore,
@@ -101,7 +100,8 @@ public class StudentService {
     private Map<UUID, Long> toMap(List<Object[]> rows) {
         Map<UUID, Long> map = new HashMap<>();
         for (Object[] row : rows) {
-            map.put((UUID) row[0], ((Number) row[1]).longValue());
+            UUID id = row[0] instanceof UUID u ? u : UUID.fromString(row[0].toString());
+            map.put(id, ((Number) row[1]).longValue());
         }
         return map;
     }
