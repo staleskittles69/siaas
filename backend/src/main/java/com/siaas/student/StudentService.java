@@ -4,6 +4,7 @@ import com.siaas.academic.Marks;
 import com.siaas.academic.MarksRepository;
 import com.siaas.attendance.AttendanceRepository;
 import com.siaas.common.ResourceNotFoundException;
+import com.siaas.student.dto.AcademicsResponse;
 import com.siaas.student.dto.DashboardResponse;
 import com.siaas.student.dto.StudentProfileResponse;
 import com.siaas.user.User;
@@ -85,6 +86,41 @@ public class StudentService {
             cgpa, sgpa, overallAtt, avgScore,
             (int) weakCount, semesterName, subjects
         );
+    }
+
+    public AcademicsResponse getAcademics(User user) {
+        Student student = getStudentOrThrow(user);
+        List<Marks> allMarks = marksRepository.findAllByStudent(student);
+
+        Map<String, List<Marks>> bySemester = new LinkedHashMap<>();
+        for (Marks m : allMarks) {
+            bySemester.computeIfAbsent(m.getSemester().getName(), k -> new ArrayList<>()).add(m);
+        }
+
+        List<AcademicsResponse.SemesterRecord> semesters = new ArrayList<>();
+        for (Map.Entry<String, List<Marks>> entry : bySemester.entrySet()) {
+            List<Marks> marks = entry.getValue();
+            double sgpa = computeWeightedGpa(marks);
+
+            List<AcademicsResponse.SubjectResult> subjects = marks.stream()
+                .map(m -> new AcademicsResponse.SubjectResult(
+                    m.getSubject().getCode(),
+                    m.getSubject().getName(),
+                    m.getSubject().getCredits(),
+                    m.getInternal(),
+                    m.getExternal(),
+                    m.getLab(),
+                    m.getAssignment(),
+                    m.getTotal(),
+                    m.getGrade(),
+                    m.getGradePoints()
+                ))
+                .toList();
+
+            semesters.add(new AcademicsResponse.SemesterRecord(entry.getKey(), sgpa, subjects));
+        }
+
+        return new AcademicsResponse(semesters);
     }
 
     private double computeWeightedGpa(List<Marks> marksList) {

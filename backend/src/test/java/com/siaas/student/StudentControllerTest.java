@@ -71,4 +71,32 @@ class StudentControllerTest {
             .andExpect(jsonPath("$.data.fullName").isString())
             .andExpect(jsonPath("$.data.rollNumber").isString());
     }
+
+    @Test
+    void academics_withoutAuth_returns401() throws Exception {
+        mvc.perform(get("/api/v1/student/academics"))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void academics_withStudentAuth_returns200WithSemesters() throws Exception {
+        String loginBody = """
+            {"email":"student@siaas.dev","password":"Student@123"}
+            """;
+        MvcResult loginResult = mvc.perform(post("/api/v1/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(loginBody))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        String cookie = loginResult.getResponse().getHeader("Set-Cookie");
+
+        mvc.perform(get("/api/v1/student/academics")
+                .header("Cookie", cookie))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.semesters").isArray())
+            .andExpect(jsonPath("$.data.semesters.length()").value(1))
+            .andExpect(jsonPath("$.data.semesters[0].semesterName").value("Semester 6 — 2026"))
+            .andExpect(jsonPath("$.data.semesters[0].subjects.length()").value(6));
+    }
 }

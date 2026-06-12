@@ -1,6 +1,7 @@
 package com.siaas.student;
 
 import com.siaas.common.ApiResponse;
+import com.siaas.student.dto.AcademicsResponse;
 import com.siaas.student.dto.DashboardResponse;
 import com.siaas.student.dto.StudentProfileResponse;
 import com.siaas.user.User;
@@ -26,5 +27,11 @@ public class StudentController {
     public ResponseEntity<ApiResponse<DashboardResponse>> dashboard(
             @AuthenticationPrincipal User user) {
         return ResponseEntity.ok(ApiResponse.ok(studentService.getDashboard(user)));
+    }
+
+    @GetMapping("/academics")
+    public ResponseEntity<ApiResponse<AcademicsResponse>> academics(
+            @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(ApiResponse.ok(studentService.getAcademics(user)));
     }
 }
