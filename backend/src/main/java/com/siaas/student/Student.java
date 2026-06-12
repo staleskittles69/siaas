@@ -2,12 +2,15 @@ package com.siaas.student;
 
 import com.siaas.user.User;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Entity
 @Table(name = "students")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Student {
 
     @Id
