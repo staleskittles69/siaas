@@ -48,10 +48,9 @@ export default function ProfilePage() {
       {/* Info grid */}
       <div className="grid grid-cols-2 gap-4">
         {[
-          { label: 'Roll Number',  value: data.rollNumber },
-          { label: 'Semester',     value: `Semester ${data.semester}` },
-          { label: 'Section',      value: `Section ${data.section}` },
-          { label: 'Department',   value: 'Computer Science & Engineering' },
+          { label: 'Roll Number', value: data.rollNumber },
+          { label: 'Semester',    value: `Semester ${data.semester}` },
+          { label: 'Section',     value: `Section ${data.section}` },
         ].map(({ label, value }) => (
           <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
             <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">{label}</p>
