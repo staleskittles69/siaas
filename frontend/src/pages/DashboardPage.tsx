@@ -93,8 +93,8 @@ export default function DashboardPage() {
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-10">
         <StatCard label="CGPA" value={data.cgpa.toFixed(2)} sub="Cumulative" accent />
         <StatCard label="SGPA" value={data.sgpa.toFixed(2)} sub="This semester" />
-        <StatCard label="Attendance" value={`${data.attendancePercent}%`} sub="Overall" />
-        <StatCard label="Avg Score" value={`${data.avgScore}%`} sub="Current semester" />
+        <StatCard label="Attendance" value={`${data.attendancePercent.toFixed(1)}%`} sub="Overall" />
+        <StatCard label="Avg Score" value={`${data.avgScore.toFixed(1)}%`} sub="Current semester" />
         <StatCard
           label="Weak Subjects"
           value={data.weakSubjectsCount}
@@ -117,13 +117,19 @@ export default function DashboardPage() {
                 <th className="py-3 px-4 text-center text-xs text-slate-500 font-medium uppercase tracking-wider">Grade</th>
                 <th className="py-3 px-4 text-center text-xs text-slate-500 font-medium uppercase tracking-wider">GP</th>
                 <th className="py-3 px-4 text-center text-xs text-slate-500 font-medium uppercase tracking-wider">Attendance</th>
-                <th className="py-3 pr-6 text-xs text-slate-500 font-medium uppercase tracking-wider" />
+                <th className="py-3 pr-6 text-xs text-slate-500 font-medium uppercase tracking-wider" aria-label="Status" />
               </tr>
             </thead>
             <tbody>
-              {data.subjects.map((s) => (
-                <SubjectRow key={s.code} s={s} />
-              ))}
+              {data.subjects.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-8 text-center text-slate-500 text-sm">
+                    No subjects this semester.
+                  </td>
+                </tr>
+              ) : (
+                data.subjects.map((s) => <SubjectRow key={s.code} s={s} />)
+              )}
             </tbody>
           </table>
         </div>
