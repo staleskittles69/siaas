@@ -1,7 +1,14 @@
+// frontend/src/App.tsx
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/DashboardPage'
+import ProfilePage from './pages/ProfilePage'
+import AcademicsPage from './pages/AcademicsPage'
+import AttendancePage from './pages/AttendancePage'
+import AnalyticsPage from './pages/AnalyticsPage'
+import CGPAPlannerPage from './pages/CGPAPlannerPage'
+import RecommendationsPage from './pages/RecommendationsPage'
 import DashboardLayout from './components/layout/DashboardLayout'
 import ProtectedRoute from './components/ProtectedRoute'
 
@@ -24,18 +31,18 @@ export default function App() {
         <Route path="/login"    element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* Student — all wrapped in DashboardLayout */}
+        {/* Student */}
         <Route element={<ProtectedRoute allowedRoles={['STUDENT']} />}>
           <Route element={<DashboardLayout />}>
             <Route path="/dashboard"       element={<DashboardPage />} />
-            <Route path="/academics"       element={<PlaceholderPage title="Academics" />} />
-            <Route path="/attendance"      element={<PlaceholderPage title="Attendance" />} />
-            <Route path="/analytics"       element={<PlaceholderPage title="Analytics" />} />
-            <Route path="/planner"         element={<PlaceholderPage title="CGPA Planner" />} />
-            <Route path="/recommendations" element={<PlaceholderPage title="Recommendations" />} />
+            <Route path="/academics"       element={<AcademicsPage />} />
+            <Route path="/attendance"      element={<AttendancePage />} />
+            <Route path="/analytics"       element={<AnalyticsPage />} />
+            <Route path="/planner"         element={<CGPAPlannerPage />} />
+            <Route path="/recommendations" element={<RecommendationsPage />} />
             <Route path="/reports"         element={<PlaceholderPage title="Reports" />} />
             <Route path="/notifications"   element={<PlaceholderPage title="Notifications" />} />
-            <Route path="/profile"         element={<PlaceholderPage title="Profile" />} />
+            <Route path="/profile"         element={<ProfilePage />} />
           </Route>
         </Route>
 
